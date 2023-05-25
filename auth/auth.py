@@ -2,7 +2,10 @@ from flask import Response, redirect, request, url_for
 import requests
 import json
 # decorator for functions that require authentication
+from google.oauth2 import id_token
+from google.auth.transport import requests
 
+from config import GOOGLE_CLIENT_ID
 
 def auth_required():
     def decorator(func):
@@ -18,27 +21,32 @@ def auth_required():
                                 )
             # check if Authorization header is valid
             token = request.headers['Authorization']
-            user_info = get_user_info(token)
-            if 'email' not in user_info:
+            token_type = token.split(' ')[0]
+            if token_type != 'Bearer':
                 return Response(status=401,
                                 mimetype='application/json',
-                                response=json.dumps(user_info)
+                                response=json.dumps({
+                                    'error': 'Invalid Authorization header'
+                                })
                                 )
+            # check if token is valid
+            try:
+                token_info = id_token.verify_oauth2_token(
+                    token.split(' ')[1], requests.Request(), GOOGLE_CLIENT_ID)
+            except Exception as e:
+                return Response(status=401,
+                                mimetype='application/json',
+                                response=json.dumps({
+                                    'error': str(e)
+                                })
+                                )
+            user = token_info['email']
+            user_info = {
+                'user': user,
+                'name': token_info['name'],
+                'picture': token_info['picture']
+            }
             args[0].user_info = user_info
             return func(*args, **kwargs)
         return wrapper
     return decorator
-
-# get user email from token
-
-
-def get_user_info(token):
-    # request to google api to get user info
-    response = requests.get(
-        'https://www.googleapis.com/oauth2/v2/userinfo',
-        headers={'Authorization': token,
-                 'Content-Type': 'application/json'
-                 }
-    )
-    # return user email
-    return response.json()
