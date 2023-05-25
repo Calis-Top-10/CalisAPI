@@ -1,0 +1,54 @@
+swagger: '2.0'
+info:
+  title: calis-api
+  description: |-
+    This is API for calis mobile app. **make sure to provide authorization heder
+  version: 1.0.0
+  
+host: gateway-calis-46kwzo0x.an.gateway.dev
+basePath: /v1
+
+schemes:
+  - https
+produces:
+  - application/json
+  
+tags:
+  - name: auth
+    description: Everything about auth
+
+securityDefinitions:
+  ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+
+paths:
+  /whoami:
+    get:
+      tags:
+        - auth
+      summary: Auth echo
+      consumes:
+      - application/json
+      operationId: authecho
+      x-google-backend:
+        address:  https://whoami-vws3d6ozda-et.a.run.app
+      responses:
+        '200':
+          description: Successful response
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+
+  /docs:
+    get:
+      summary: Endpoint for this -_-
+      operationId: doc
+      x-google-backend:
+        address:  https://docs-vws3d6ozda-et.a.run.app
+      responses:
+        '200':
+          description: Successful response
+

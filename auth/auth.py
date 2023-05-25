@@ -12,7 +12,11 @@ def auth_required():
         def wrapper(*args, **kwargs):
             request = args[0]
             # check if Authorization header is present
-            if 'Authorization' not in request.headers:
+            if 'X-Forwarded-Authorization' in request.headers:
+                token = request.headers['X-Forwarded-Authorization']
+            elif 'Authorization' in request.headers:
+                token = request.headers['Authorization']
+            else:
                 return Response(status=401,
                                 mimetype='application/json',
                                 response=json.dumps({
@@ -20,7 +24,6 @@ def auth_required():
                                 })
                                 )
             # check if Authorization header is valid
-            token = request.headers['Authorization']
             token_type = token.split(' ')[0]
             if token_type != 'Bearer':
                 return Response(status=401,

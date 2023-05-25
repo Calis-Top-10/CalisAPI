@@ -12,6 +12,12 @@ provider "google" {
   region      = "ASIA-SOUTHEAST2"
 }
 
+# create a variable for client id
+variable "client_id" {
+  type = string
+  default = "327782085729-2ufk2e1fmmr67far9h9kdqlqnp7d0ssr.apps.googleusercontent.com"
+}
+
 
 resource "google_storage_bucket" "default" {
   name                        = "calis-gcf-source" # Every bucket name must be globally unique
@@ -27,7 +33,7 @@ data "archive_file" "default" {
   source_dir  = ".."
 }
 resource "google_storage_bucket_object" "object" {
-  name   = "calis-gcf-source.zip"
+  name   = format("%s-%s.zip", "calis-gcf-source.zip", data.archive_file.default.output_md5)
   bucket = google_storage_bucket.default.name
   source = data.archive_file.default.output_path # Add path to the zipped function source code
 }
@@ -40,6 +46,9 @@ resource "google_cloudfunctions2_function" "default" {
   build_config {
     runtime     = "python310"
     entry_point = "whoami" # Set the entry point
+    environment_variables = {
+      GOOGLE_CLIENT_ID = var.client_id
+    }
     source {
       storage_source {
         bucket = google_storage_bucket.default.name
@@ -55,6 +64,35 @@ resource "google_cloudfunctions2_function" "default" {
   }
 }
 
-output "function_uri" {
+resource "google_cloudfunctions2_function" "docs" {
+  name        = "docs"
+  location    = "asia-southeast2"
+  description = "docs"
+
+  build_config {
+    runtime     = "python310"
+    entry_point = "docs" # Set the entry point
+    environment_variables = {
+      GOOGLE_CLIENT_ID = var.client_id
+    }
+    source {
+      storage_source {
+        bucket = google_storage_bucket.default.name
+        object = google_storage_bucket_object.object.name
+      }
+    }
+  }
+
+  service_config {
+    max_instance_count = 1
+    available_memory   = "256M"
+    timeout_seconds    = 60
+  }
+}
+
+output "whoami_url" {
   value = google_cloudfunctions2_function.default.service_config[0].uri
+}
+output "docs_url" {
+  value = google_cloudfunctions2_function.docs.service_config[0].uri
 }
