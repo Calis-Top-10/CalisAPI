@@ -2,3 +2,6 @@ venv
 .vscode
 __pycache__
 cred
+.terraform*
+.terraform.lock.hcl
+terraform.tfstate*
