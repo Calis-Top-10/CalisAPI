@@ -5,3 +5,4 @@ cred
 .terraform*
 .terraform.lock.hcl
 terraform.tfstate*
+cfds_sa.json
