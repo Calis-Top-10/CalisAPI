@@ -43,8 +43,17 @@ def login(request):
 
 @auth.auth_required()    
 def addChildren(request):
-    childName = request.form.get('childName', None)
-    childAge = request.form.get('childAge', None)
+    # check content type
+    if request.content_type != 'application/json':
+        return Response(status=415,
+                        mimetype='application/json',
+                        response=json.dumps({"error": "Content-Type must be application/json"}))
+    
+    # get data from request
+    data = request.get_json()
+    childName = data.get('childName')
+    childAge = data.get('childAge')
+
     email = request.user_info['user']
 
     if childName == None:
@@ -88,7 +97,9 @@ def addChildren(request):
 
         return Response(status=200,
                         mimetype='application/json',
-                        response=json.dumps(user_data, default=str))
+                        response=json.dumps({
+                            childId: child
+                        }, default=str))
     
 
 

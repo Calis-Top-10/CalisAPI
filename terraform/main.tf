@@ -90,9 +90,68 @@ resource "google_cloudfunctions2_function" "docs" {
   }
 }
 
+resource "google_cloudfunctions2_function" "login" {
+  name        = "login"
+  location    = "asia-southeast2"
+  description = "login and register for calis"
+
+  build_config {
+    runtime     = "python310"
+    entry_point = "login" # Set the entry point
+    environment_variables = {
+      GOOGLE_CLIENT_ID = var.client_id
+    }
+    source {
+      storage_source {
+        bucket = google_storage_bucket.default.name
+        object = google_storage_bucket_object.object.name
+      }
+    }
+  }
+
+  service_config {
+    max_instance_count = 1
+    available_memory   = "256M"
+    timeout_seconds    = 60
+  }
+}
+
+resource "google_cloudfunctions2_function" "addChildren" {
+  name        = "addChildren"
+  location    = "asia-southeast2"
+  description = "add children for account"
+
+  build_config {
+    runtime     = "python310"
+    entry_point = "addChildren" # Set the entry point
+    environment_variables = {
+      GOOGLE_CLIENT_ID = var.client_id
+    }
+    source {
+      storage_source {
+        bucket = google_storage_bucket.default.name
+        object = google_storage_bucket_object.object.name
+      }
+    }
+  }
+
+  service_config {
+    max_instance_count = 1
+    available_memory   = "256M"
+    timeout_seconds    = 60
+  }
+}
+
 output "whoami_url" {
   value = google_cloudfunctions2_function.default.service_config[0].uri
 }
 output "docs_url" {
   value = google_cloudfunctions2_function.docs.service_config[0].uri
 }
+output "login_url" {
+  value = google_cloudfunctions2_function.login.service_config[0].uri
+}
+output "addChildren_url" {
+  value = google_cloudfunctions2_function.addChildren.service_config[0].uri
+}
+

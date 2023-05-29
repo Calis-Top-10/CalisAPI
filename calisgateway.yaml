@@ -2,13 +2,14 @@ swagger: '2.0'
 info:
   title: calis-api
   description: |-
-    This is API for calis mobile app. **make sure to provide authorization heder
+    This is API for calis mobile app. **make sure to provide authorization heder**
   version: 1.0.0
   
 host: gateway-calis-46kwzo0x.an.gateway.dev
 basePath: /v1
 
 schemes:
+  - http
   - https
 produces:
   - application/json
@@ -16,6 +17,7 @@ produces:
 tags:
   - name: auth
     description: Everything about auth
+  - name: profile
 
 securityDefinitions:
   ApiKeyAuth:
@@ -41,7 +43,106 @@ paths:
             type: string
       security:
       - ApiKeyAuth: []
+  
+  /login:
+    get:
+      tags:
+        - auth
+      summary: Endpoint for login and/or register
+      consumes:
+      - application/json
+      operationId: login
+      x-google-backend:
+        address:  https://login-vws3d6ozda-et.a.run.app
+      responses:
+        '200':
+          description: User successfully login/register
+          schema:
+            type: object
+            properties:
+              createdAt:
+                type: string
+                description: datetime when was user first login/register
+              email:
+                type: string
+                description: the user email
+              children:
+                type: object
+                description: Related children for this user
+                properties:
+                  random_uuid_value:
+                    type: object
+                    properties:
+                      yearOfBirth:
+                        type: integer
+                        description: the year when child was born to suffer
+                      createdAt:
+                        type: string
+                        description: when this children added
+                      photoUrl:
+                        type: string
+                        description: url of the children profile pict
+                      childName:
+                        type: string
 
+        '400':
+          description: Invalid request
+          schema: 
+            type: object
+            properties:
+              error:
+                type: string
+                description: the error message  
+      security:
+      - ApiKeyAuth: []      
+
+  /addChildren:
+    post:
+      tags:
+        - profile
+      summary: add children to user
+      consumes:
+      - application/json
+      operationId: addChildren
+      x-google-backend:
+        address:  https://addchildren-vws3d6ozda-et.a.run.app
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              childAge:
+                type: integer
+                description: children age
+              childName:
+                type: string
+                description: children name
+
+      responses:
+        '200':
+          description: Successful response
+          schema:
+                type: object
+                description: newly created children object
+                properties:
+                  random_uuid_value:
+                    type: object
+                    properties:
+                      yearOfBirth:
+                        type: integer
+                        description: the year when child was born to suffer
+                      createdAt:
+                        type: string
+                        description: when this children added
+                      photoUrl:
+                        type: string
+                        description: url of the children profile pict
+                      childName:
+                        type: string
+      security:
+      - ApiKeyAuth: []
+  
   /docs:
     get:
       summary: Endpoint for this -_-
