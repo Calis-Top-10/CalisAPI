@@ -100,7 +100,21 @@ def addChildren(request):
                         response=json.dumps({
                             childId: child
                         }, default=str))
-    
+   
+#create function learning progress
+@auth.auth_required()
+def journey(request):
+
+    if request.content_type != 'application/json':
+        return Response(status=415,
+                        mimetype='application/json',
+                        response=json.dumps({"error": "Content-Type must be application/json"}))
+    #create get learning data from MD
+    data = request.get_json()
+    lesson_id = data.get('lessonId')
+    return Response (status=200,
+                    mimetype='application/json',
+                    response=json.dumps({"yourID":lesson_id}))
 
 
 
