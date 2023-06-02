@@ -57,3 +57,18 @@ def auth_required():
             return func(*args, **kwargs)
         return wrapper
     return decorator
+
+def admin_required():
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            request = args[0]
+            if request.user_info['user'] not in ["c169dsx2787@bangkit.academy"]:
+                return Response(status=401,
+                                mimetype='application/json',
+                                response=json.dumps({
+                                    'error': 'You are not an admin'
+                                })
+                                )
+            return func(*args, **kwargs)
+        return wrapper  
+    return decorator
