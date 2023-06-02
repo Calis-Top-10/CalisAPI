@@ -264,6 +264,36 @@ def insertLessons(request):
                                          "lessonIds": lessonIds}, default=str))
 
 
+@auth.auth_required()
+def getLessonByType(request):
+
+    lesson_type = request.args.get('lessonType')
+
+    if lesson_type == None:
+        return response.missing_field('lessonType')
+    
+    query = client.query(kind='lesson')
+    query.add_filter('lessonType', '=', lesson_type)
+    results = list(query.fetch())
+
+    if len(results) == 0:
+        return Response(status=404,
+                        mimetype='application/json',
+                        response=json.dumps({"error": "No lessons found"}))
+    
+    for lesson in results:
+        questionsIds = lesson.get('questions')
+        questions = []
+        for questionId in questionsIds:
+            question = client.get(client.key('question', questionId))
+            questions.append(question)
+        lesson['questions'] = questions
+    return Response(status=200,
+                    mimetype='application/json',
+                    response=json.dumps({"lessons": results}, default=str))
+
+
+
 def docs(request):
     return Response(status=200,
                     mimetype='text/html',
