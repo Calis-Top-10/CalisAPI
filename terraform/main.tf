@@ -142,6 +142,59 @@ resource "google_cloudfunctions2_function" "addChildren" {
   }
 }
 
+resource "google_cloudfunctions2_function" "insertLessons" {
+  name        = "insertLessons"
+  location    = "asia-southeast2"
+  description = "insert multiple lessons"
+
+  build_config {
+    runtime     = "python310"
+    entry_point = "insertLessons" # Set the entry point
+    environment_variables = {
+      GOOGLE_CLIENT_ID = var.client_id
+    }
+    source {
+      storage_source {
+        bucket = google_storage_bucket.default.name
+        object = google_storage_bucket_object.object.name
+      }
+    }
+  }
+
+  service_config {
+    max_instance_count = 1
+    available_memory   = "256M"
+    timeout_seconds    = 60
+  }
+}
+
+resource "google_cloudfunctions2_function" "getLessonSByType" {
+  name        = "getLessonSByType"
+  location    = "asia-southeast2"
+  description = "get lesson by type"
+
+  build_config {
+    runtime     = "python310"
+    entry_point = "getLessonSByType" # Set the entry point
+    environment_variables = {
+      GOOGLE_CLIENT_ID = var.client_id
+    }
+    source {
+      storage_source {
+        bucket = google_storage_bucket.default.name
+        object = google_storage_bucket_object.object.name
+      }
+    }
+  }
+
+  service_config {
+    max_instance_count = 1
+    available_memory   = "256M"
+    timeout_seconds    = 60
+  }
+}
+
+
 output "whoami_url" {
   value = google_cloudfunctions2_function.default.service_config[0].uri
 }
@@ -153,5 +206,11 @@ output "login_url" {
 }
 output "addChildren_url" {
   value = google_cloudfunctions2_function.addChildren.service_config[0].uri
+}
+output "insertLessons_url" {
+  value = google_cloudfunctions2_function.insertLessons.service_config[0].uri
+}
+output "getLessonSByType_url" {
+  value = google_cloudfunctions2_function.getLessonSByType.service_config[0].uri
 }
 

@@ -265,7 +265,7 @@ def insertLessons(request):
 
 
 @auth.auth_required()
-def getLessonByType(request):
+def getLessonSByType(request):
 
     lesson_type = request.args.get('lessonType')
 

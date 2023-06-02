@@ -18,6 +18,11 @@ tags:
   - name: auth
     description: Everything about auth
   - name: profile
+    description: Everything about user profile
+  - name: admin
+    description: Endpoint for admin only
+  - name: lesson
+    description: Endpoint related to lesson
 
 securityDefinitions:
   ApiKeyAuth:
@@ -142,7 +147,118 @@ paths:
                         type: string
       security:
       - ApiKeyAuth: []
-  
+
+  /insertLessons:
+    post:
+      tags:
+        - admin
+        - lesson
+      summary: insert multiple lessons to database
+      consumes:
+        - application/json
+      operationId: insertLessons
+      x-google-backend:
+        address:  https://insertlessons-vws3d6ozda-et.a.run.app
+      parameters:
+        - in: body
+          name: body
+          description: example https://github.com/Calis-Top-10/Soal/blob/main/soal/soal_baca.jsonc
+          schema:
+            type: object
+            properties:
+              lessons:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    lessonType:
+                      type: string
+                    lessonLevel:
+                      type: integer
+                    questions:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          type:
+                            type: string
+                          question:
+                            type: string
+                          answer:
+                            type: array
+                            items:
+                              type: string
+                        additionalProperties:
+                          type: string
+      responses:
+        200:
+          description: Success
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              lessonIds:
+                type: object
+                properties:
+                  lessonId1:
+                    type: integer
+                  lessonId2:
+                    type: integer
+
+      security:
+        - ApiKeyAuth: []
+
+  /getLessonsByType:
+    get:
+      tags:
+        - lesson
+      summary: get lessons by type
+      consumes:
+        - application/json
+      operationId: getLessonsByType
+      x-google-backend:
+        address:  https://getlessonsbytype-vws3d6ozda-et.a.run.app
+      parameters:
+        - in: query
+          name: lessonType
+          type: string
+          description: lesson type
+      responses:
+        200:
+          description: Success
+          schema:
+            type: object
+            properties:
+              lessons:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    lessonId:
+                      type: integer
+                    lessonType:
+                      type: string
+                    lessonLevel:
+                      type: integer
+                    questions:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          type:
+                            type: string
+                          question:
+                            type: string
+                          answer:
+                            type: array
+                            items:
+                              type: string
+                        additionalProperties:
+                          type: string
+      security:
+        - ApiKeyAuth: []
+
   /docs:
     get:
       summary: Endpoint for this -_-
