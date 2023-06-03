@@ -236,7 +236,7 @@ paths:
                   type: object
                   properties:
                     lessonId:
-                      type: integer
+                      type: string
                     lessonType:
                       type: string
                     lessonLevel:
@@ -258,6 +258,37 @@ paths:
                           type: string
       security:
         - ApiKeyAuth: []
+
+  /getLearningData:
+    post:
+      tags:
+        - learning progress
+      summary: get learning progress (not ready)
+      consumes:
+        - application/json
+      operationId: getLearningData
+      x-google-backend:
+        address:  https://getLearningData-vws3d6ozda-et.a.run.app
+      parameters:
+        - in: query
+          name: learningData
+          type: string
+          description: learning progress
+      responses:
+        200:
+          description: success
+          schema: 
+            type: object
+            properties:
+              lesson_id:
+                type: string
+              attempts:
+                type: object
+                properties:
+                  questionId:
+                    type: string
+                  isCorrect:
+                    type: boolean
 
   /docs:
     get:

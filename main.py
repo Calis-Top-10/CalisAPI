@@ -303,16 +303,28 @@ def getLearningData(request):
     import datetime
 
     data = request.get_json()
-    lesson = data.get('lesson_id')
+    child = data.get('childId')
+    lesson = data.get('lessonId')
     timestamp = datetime.datetime.now().strftime('%m/%d/%Y')
-    attempts = {
-        'timestamp': timestamp,
-        'questionID': data['attempts'].get('questionId'), #TODO cara dapet questionsId dari fungsi lain
-        'isCorrect': data['attempts'].get('isCorrect')
+    attempts = data['attempts'] 
+    #check if the child belong to this user
+    userId = request.user_info['user']
+    userData = client.get(client.key('user',userId))
+    if userData.get('children').get(child) == None:
+        return Response (status=403,
+                        mimetype='application/json',
+                        response=json.dumps({'error': 'child Id not found or this child does not belong to you'}))
+                        
+    childLearningData = client.get(client.key('user_learning', child))
+    childLearningData['completedLessonsObject'][lesson]={
+        'timestamp': datetime.datetime.now().strftime('%m/%d/%Y'),
+        'attempts': attempts
     }
+    client.put(childLearningData)
+
     return Response (status=200,
                     mimetype='application/json',
-                    response=json.dumps({"yourID":lesson, "timestamp":timestamp, "attempts":attempts}))
+                    response=json.dumps({"lessonID":lesson, "timestamp":timestamp, "attempts":attempts}))
 
 
 
