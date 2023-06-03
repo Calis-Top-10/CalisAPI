@@ -293,6 +293,29 @@ def getLessonSByType(request):
                     response=json.dumps({"lessons": results}, default=str))
 
 
+#get learning data from android
+@auth.auth_required()
+def getLearningData(request): 
+
+    if request.content_type != 'application/json':
+        return Response(status=415,
+                        mimetype='application/json',
+                        response=json.dumps({"error": "Content-Type must be application/json"}))
+    import datetime
+
+    data = request.get_json()
+    lesson = data.get('lesson_id')
+    timestamp = datetime.datetime.now().strftime('%m/%d/%Y')
+    attempts = {
+        'timestamp': timestamp,
+        'questionID': data['attempts'].get('questionId'), #TODO cara dapet questionsId dari fungsi lain
+        'isCorrect': data['attempts'].get('isCorrect')
+    }
+    return Response (status=200,
+                    mimetype='application/json',
+                    response=json.dumps({"yourID":lesson, "timestamp":timestamp, "attempts":attempts}))
+
+
 
 def docs(request):
     return Response(status=200,

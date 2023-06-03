@@ -194,6 +194,27 @@ resource "google_cloudfunctions2_function" "getLessonSByType" {
   }
 }
 
+resource "google_cloudfunctions2_function" "getLearningData" {
+  name        = "getLearningData"
+  location    = "asia-southeast2"
+  description = "get lesson progress from Android"
+
+  build_config {
+    runtime     = "python310"
+    entry_point = "getLearningData" # Set the entry point
+    environment_variables = {
+      GOOGLE_CLIENT_ID = var.client_id
+    }
+    source {
+      storage_source {
+        bucket = google_storage_bucket.default.name
+        object = google_storage_bucket_object.object.name
+      }
+    }
+  }
+}
+
+
 
 output "whoami_url" {
   value = google_cloudfunctions2_function.default.service_config[0].uri
