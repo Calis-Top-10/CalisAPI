@@ -231,6 +231,14 @@ resource "google_cloudfunctions2_function" "getLearningData" {
       }
     }
   }
+  service_config {
+    max_instance_count = 1
+    available_memory   = "256M"
+    timeout_seconds    = 60
+    environment_variables = {
+      GOOGLE_CLIENT_IDS = var.client_id
+    }
+  }
 }
 
 
