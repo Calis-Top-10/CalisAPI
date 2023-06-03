@@ -15,7 +15,7 @@ provider "google" {
 # create a variable for client id
 variable "client_id" {
   type = string
-  default = "327782085729-2ufk2e1fmmr67far9h9kdqlqnp7d0ssr.apps.googleusercontent.com"
+  default = "327782085729-2ufk2e1fmmr67far9h9kdqlqnp7d0ssr.apps.googleusercontent.com,327782085729-h2n5snb0i2grgge995mkslhq3tgfd161.apps.googleusercontent.com"
 }
 
 
@@ -47,7 +47,7 @@ resource "google_cloudfunctions2_function" "default" {
     runtime     = "python310"
     entry_point = "whoami" # Set the entry point
     environment_variables = {
-      GOOGLE_CLIENT_ID = var.client_id
+      GOOGLE_CLIENT_IDS = var.client_id
     }
     source {
       storage_source {
@@ -61,6 +61,9 @@ resource "google_cloudfunctions2_function" "default" {
     max_instance_count = 1
     available_memory   = "256M"
     timeout_seconds    = 60
+    environment_variables = {
+      GOOGLE_CLIENT_IDS = var.client_id
+    }
   }
 }
 
@@ -73,7 +76,7 @@ resource "google_cloudfunctions2_function" "docs" {
     runtime     = "python310"
     entry_point = "docs" # Set the entry point
     environment_variables = {
-      GOOGLE_CLIENT_ID = var.client_id
+      GOOGLE_CLIENT_IDS = var.client_id
     }
     source {
       storage_source {
@@ -87,6 +90,9 @@ resource "google_cloudfunctions2_function" "docs" {
     max_instance_count = 1
     available_memory   = "256M"
     timeout_seconds    = 60
+    environment_variables = {
+      GOOGLE_CLIENT_IDS = var.client_id
+    }
   }
 }
 
@@ -99,7 +105,7 @@ resource "google_cloudfunctions2_function" "login" {
     runtime     = "python310"
     entry_point = "login" # Set the entry point
     environment_variables = {
-      GOOGLE_CLIENT_ID = var.client_id
+      GOOGLE_CLIENT_IDS = var.client_id
     }
     source {
       storage_source {
@@ -113,7 +119,11 @@ resource "google_cloudfunctions2_function" "login" {
     max_instance_count = 1
     available_memory   = "256M"
     timeout_seconds    = 60
+    environment_variables = {
+      GOOGLE_CLIENT_IDS = var.client_id
+    }
   }
+  
 }
 
 resource "google_cloudfunctions2_function" "addChildren" {
@@ -125,7 +135,7 @@ resource "google_cloudfunctions2_function" "addChildren" {
     runtime     = "python310"
     entry_point = "addChildren" # Set the entry point
     environment_variables = {
-      GOOGLE_CLIENT_ID = var.client_id
+      GOOGLE_CLIENT_IDS = var.client_id
     }
     source {
       storage_source {
@@ -139,6 +149,9 @@ resource "google_cloudfunctions2_function" "addChildren" {
     max_instance_count = 1
     available_memory   = "256M"
     timeout_seconds    = 60
+    environment_variables = {
+      GOOGLE_CLIENT_IDS = var.client_id
+    }
   }
 }
 
@@ -151,7 +164,7 @@ resource "google_cloudfunctions2_function" "insertLessons" {
     runtime     = "python310"
     entry_point = "insertLessons" # Set the entry point
     environment_variables = {
-      GOOGLE_CLIENT_ID = var.client_id
+      GOOGLE_CLIENT_IDS = var.client_id
     }
     source {
       storage_source {
@@ -165,6 +178,9 @@ resource "google_cloudfunctions2_function" "insertLessons" {
     max_instance_count = 1
     available_memory   = "256M"
     timeout_seconds    = 60
+    environment_variables = {
+      GOOGLE_CLIENT_IDS = var.client_id
+    }
   }
 }
 
@@ -177,7 +193,7 @@ resource "google_cloudfunctions2_function" "getLessonSByType" {
     runtime     = "python310"
     entry_point = "getLessonSByType" # Set the entry point
     environment_variables = {
-      GOOGLE_CLIENT_ID = var.client_id
+      GOOGLE_CLIENT_IDS = var.client_id
     }
     source {
       storage_source {
@@ -191,6 +207,9 @@ resource "google_cloudfunctions2_function" "getLessonSByType" {
     max_instance_count = 1
     available_memory   = "256M"
     timeout_seconds    = 60
+    environment_variables = {
+      GOOGLE_CLIENT_IDS = var.client_id
+    }
   }
 }
 

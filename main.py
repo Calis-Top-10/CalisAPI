@@ -2,7 +2,6 @@ import auth.auth as auth
 from flask import Flask, Response, redirect, request, url_for
 import json
 
-from config import GOOGLE_CLIENT_ID
 from swagger.render import render_swagger_ui
 
 from datastore.datastore import initClient, datastore
