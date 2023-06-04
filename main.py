@@ -305,7 +305,7 @@ def getLearningData(request):
     data = request.get_json()
     child = data.get('childId')
     lesson = data.get('lessonId')
-    timestamp = datetime.datetime.now().strftime('%m/%d/%Y')
+    timestamp = datetime.datetime.now().strftime('%d/%m/%Y')
     attempts = data['attempts'] 
     #check if the child belong to this user
     userId = request.user_info['user']
@@ -317,9 +317,43 @@ def getLearningData(request):
                         
     childLearningData = client.get(client.key('user_learning', child))
     childLearningData['completedLessonsObject'][lesson]={
-        'timestamp': datetime.datetime.now().strftime('%m/%d/%Y'),
+        'timestamp': data.get('timestamp'),
+        'insertedAt': datetime.datetime.now().strftime('%d/%m/%Y'),
         'attempts': attempts
     }
+
+    dateOfLearning = data.get('timestamp')
+    lastUpdated = str(childLearningData.get('weeklyLearningIndex').get('lastUpdated'))
+    # if last updated is last week
+    if lastUpdated != None and lastUpdated != '' and lastUpdated != 'None':
+        try:
+            lastUpdated = datetime.datetime.strptime(lastUpdated, '%d/%m/%Y')
+        except:
+            lastUpdated = datetime.datetime.strptime(lastUpdated, '%Y-%m-%d %H:%M:%S.%f%z')
+        if lastUpdated.isocalendar()[1] < datetime.datetime.strptime(dateOfLearning, '%d/%m/%Y').isocalendar()[1]:
+            integer = 0
+        elif lastUpdated.isocalendar()[1] == datetime.datetime.strptime(dateOfLearning, '%d/%m/%Y').isocalendar()[1]:
+            integer = childLearningData.get('weeklyLearningIndex').get('integer')
+        else:
+            integer = 0
+
+
+    try :
+        # get which day of the week it is
+        dayOfLearning = datetime.datetime.strptime(dateOfLearning, '%d/%m/%Y').weekday()
+        integer = integer | 1 << dayOfLearning
+
+        childLearningData['weeklyLearningIndex'] = {
+            'integer': integer,
+            'lastUpdated': dateOfLearning
+        }
+    except Exception as e:
+        return Response(status=500,
+                        mimetype='application/json',
+                        response=json.dumps({"error": str(e)}))
+        
+    
+
     client.put(childLearningData)
 
     return Response (status=200,
