@@ -213,14 +213,14 @@ resource "google_cloudfunctions2_function" "getLessonSByType" {
   }
 }
 
-resource "google_cloudfunctions2_function" "getLearningData" {
-  name        = "getLearningData"
+resource "google_cloudfunctions2_function" "updateUserLearning" {
+  name        = "updateUserLearning"
   location    = "asia-southeast2"
   description = "get lesson progress from Android"
 
   build_config {
     runtime     = "python310"
-    entry_point = "getLearningData" # Set the entry point
+    entry_point = "updateUserLearning" # Set the entry point
     environment_variables = {
       GOOGLE_CLIENT_ID = var.client_id
     }

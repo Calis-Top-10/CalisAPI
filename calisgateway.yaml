@@ -2,15 +2,15 @@ swagger: '2.0'
 info:
   title: calis-api
   description: |-
-    This is API for calis mobile app. **make sure to provide authorization heder**
+    This is API for calis mobile app. **make sure to provide authorization header**. For testing, you can get it here: [auth echo](https://authecho-vws3d6ozda-et.a.run.app/)
   version: 1.0.0
   
 host: gateway-calis-46kwzo0x.an.gateway.dev
 basePath: /v1
 
 schemes:
-  - http
   - https
+  - http
 produces:
   - application/json
   
@@ -259,40 +259,66 @@ paths:
       security:
         - ApiKeyAuth: []
 
-  /getLearningData:
+  /updateUserLearning:
     post:
       tags:
         - learning progress
-      summary: get learning progress (not ready)
+      summary: update user learning progress
       consumes:
         - application/json
-      operationId: getLearningData
+      operationId: updateUserLearning
       x-google-backend:
-        address:  https://getLearningData-vws3d6ozda-et.a.run.app
+        address:  https://updateuserlearning-vws3d6ozda-et.a.run.app
       parameters:
-        - in: query
-          name: learningData
-          type: string
-          description: learning progress
+      - name: body
+        in: body
+        description: Request payload
+        required: true
+        schema:
+          type: object
+          properties:
+            childId:
+              type: string
+              format: uuid
+              example: a48db6a1-8cd7-4f25-9df4-d4b6e7bf5674
+            lessonId:
+              type: string
+              format: uuid
+              example: 04fb20c5-6e65-474f-805c-cb5d0e104da8
+            timestamp:
+              type: string
+              format: date
+              example: 05/06/2023
+            attempts:
+              type: array
+              items:
+                type: object
+                properties:
+                  questionId:
+                    type: string
+                    format: uuid
+                  isCorrect:
+                    type: boolean
+              example:
+                - questionId: 4dd53e83-fdeb-4d2b-ab38-f10520022e88
+                  isCorrect: false
+                - questionId: 388e837e-1c10-4d30-aaad-8ff039c7fe5f
+                  isCorrect: true
+                - questionId: d4e8216d-a9c4-4bc5-8824-64aff3c74312
+                  isCorrect: false
+                - questionId: 3f5e775f-fa0a-4775-8ec5-6db33822b3c2
+                  isCorrect: true
+                - questionId: 3dd7e44f-d83f-4b0d-8c7a-349db631596e
+                  isCorrect: true
+
       responses:
         200:
           description: success
           schema: 
             type: object
             properties:
-              lesson_id:
+              message:
                 type: string
-              timestamp:
-                type: string
-              attempts:
-                type: object
-                properties:
-                  timestamp:
-                    type: string
-                  questionId:
-                    type: string
-                  isCorrect:
-                    type: boolean
       security:
         - ApiKeyAuth: []
 
