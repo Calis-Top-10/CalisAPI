@@ -307,7 +307,7 @@ paths:
       x-google-backend:
         address:  https://reportData-vws3d6ozda-et.a.run.app
       parameters:
-        - in: query
+        - in: body
           name: reportLearning
           type: string
           description: report learning data
