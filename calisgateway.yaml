@@ -296,21 +296,21 @@ paths:
       security:
         - ApiKeyAuth: []
 
-  /reportData:
+  /userReport:
     post:
       tags:
-        - report learning
+        - user report learning
       summary: report learning
       consumes:
         - application/json
-      operationId: reportData
+      operationId: userReport
       x-google-backend:
-        address:  https://reportData-vws3d6ozda-et.a.run.app
+        address:  https://userReport-vws3d6ozda-et.a.run.app
       parameters:
         - in: body
           name: reportLearning
           type: string
-          description: report learning data
+          description: user report learning 
           schema:
             type: object
             properties:

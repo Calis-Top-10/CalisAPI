@@ -362,7 +362,7 @@ def getLearningData(request):
 
 #metode post report tidak disimpan di db
 @auth.auth_required() 
-def reportData(request):
+def userReport(request):
     data = request.get_json()
     email = data.get('email')
     child = data.get('childId')  

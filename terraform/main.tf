@@ -241,14 +241,14 @@ resource "google_cloudfunctions2_function" "getLearningData" {
   }
 }
 
-resource "google_cloudfunctions2_function" "reportData" {
-  name        = "reportData"
+resource "google_cloudfunctions2_function" "userReport" {
+  name        = "userReport"
   location    = "asia-southeast2"
   description = "for report learning"
 
   build_config {
     runtime     = "python310"
-    entry_point = "reportData" # Set the entry point
+    entry_point = "userReport" # Set the entry point
     environment_variables = {
       GOOGLE_CLIENT_ID = var.client_id
     }
