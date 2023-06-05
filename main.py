@@ -326,6 +326,32 @@ def getLearningData(request):
                     mimetype='application/json',
                     response=json.dumps({"lessonID":lesson, "timestamp":timestamp, "attempts":attempts}))
 
+#metode post report tidak disimpan di db
+@auth.auth_required() 
+def reportData(request):
+    data = request.get_json()
+    email = data.get('email')
+    child = data.get('childId')  
+    lessonThatNeedHelp = data.get ('tag')  # Perbaiki penamaan tag
+    weekly_learning = data.get('weeklyLearning', {
+        'senin': bool(),
+        'selasa': bool(),
+        'rabu': bool(),
+        'kamis': bool(),
+        'jumat': bool(),
+        'sabtu': bool(),
+        'minggu': bool()
+    })
+    return Response(
+        status=200,
+        mimetype='application/json',
+        response=json.dumps({
+            "email": email,
+            "childId": child,
+            "tag": lessonThatNeedHelp,
+            "learningProgress": weekly_learning
+        })
+    )
 
 
 def docs(request):

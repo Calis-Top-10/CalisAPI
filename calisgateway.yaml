@@ -282,6 +282,8 @@ paths:
             properties:
               lesson_id:
                 type: string
+              timestamp:
+                type: string
               attempts:
                 type: object
                 properties:
@@ -289,6 +291,82 @@ paths:
                     type: string
                   isCorrect:
                     type: boolean
+      security:
+        - ApiKeyAuth: []
+
+  /reportData:
+    post:
+      tags:
+        - Report
+      summary: report learning
+      consumes:
+        - application/json
+      operationId: reportData
+      x-google-backend:
+        address:  https://reportData-vws3d6ozda-et.a.run.app
+      parameters:
+        - in: query
+          name: reportLearning
+          type: string
+          description: report learning data
+          schema:
+            type: "object"
+            properties:
+                email:
+                  type: "string"
+                childId:
+                  type: "string"
+                tag:
+                  type: "string"
+                learningProgress:
+                  weekly learning:
+                    type: "object"
+                    properties:
+                      senin:
+                        type: "boolean"
+                      selasa:
+                        type: "boolean"
+                      rabu:
+                        type: "boolean"
+                      kamis:
+                        type: "boolean"
+                      jumat:
+                        type: "boolean"
+                      sabtu:
+                        type: "boolean"
+                      minggu:
+                        type: "boolean"
+      responses:
+        200:
+          description: Success
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+              childId:
+                type: string
+              tag:
+                type: string 
+              learningprogress:
+                type: boolean
+                properties:
+                  senin:
+                    type: "boolean"
+                  selasa:
+                    type: "boolean"
+                  rabu:
+                    type: "boolean"
+                  kamis:
+                    type: "boolean"
+                  jumat:
+                    type: "boolean"
+                  sabtu:
+                    type: "boolean"
+                  minggu:
+                    type: "boolean"
+      security:
+        - ApiKeyAuth: []
 
   /docs:
     get:
