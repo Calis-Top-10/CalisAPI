@@ -9,6 +9,12 @@ import datetime
 import uuid
 from utils import response
 
+"""
+TODO: 
+=============================================
+PLEASE REFACTOR THIS CODE AND MAKE IT MODULAR
+=============================================
+"""
 
 client = initClient()
 
@@ -292,9 +298,9 @@ def getLessonSByType(request):
                     response=json.dumps({"lessons": results}, default=str))
 
 
-#get learning data from android
+# update user learning
 @auth.auth_required()
-def getLearningData(request): 
+def updateUserLearning(request): 
 
     if request.content_type != 'application/json':
         return Response(status=415,
@@ -310,6 +316,12 @@ def getLearningData(request):
     #check if the child belong to this user
     userId = request.user_info['user']
     userData = client.get(client.key('user',userId))
+
+    if userData == None:
+        return Response (status=401,
+                        mimetype='application/json',
+                        response=json.dumps({'error': 'Strange, you are not registered. Maybe /login first and thn make some child if you know what I mean {ಠʖಠ}'}))
+
     if userData.get('children').get(child) == None:
         return Response (status=403,
                         mimetype='application/json',
@@ -351,14 +363,23 @@ def getLearningData(request):
         return Response(status=500,
                         mimetype='application/json',
                         response=json.dumps({"error": str(e)}))
+
+    for attempt in attempts:
+        questionEntity = client.get(client.key('question', attempt['questionId']))
+        tags = questionEntity.get("tags")
+        score = 1 if attempt['isCorrect'] else -1
         
-    
+        for tag in tags:
+            try:
+                childLearningData['tagScoring'][tag] += score   
+            except KeyError:
+                childLearningData['tagScoring'][tag] = score
 
     client.put(childLearningData)
 
     return Response (status=200,
                     mimetype='application/json',
-                    response=json.dumps({"lessonID":lesson, "timestamp":timestamp, "attempts":attempts}))
+                    response=json.dumps({"message":"all good"}))
 
 #metode post report tidak disimpan di db
 @auth.auth_required() 
