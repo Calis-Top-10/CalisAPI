@@ -287,6 +287,8 @@ paths:
               attempts:
                 type: object
                 properties:
+                  timestamp:
+                    type: string
                   questionId:
                     type: string
                   isCorrect:
@@ -297,7 +299,7 @@ paths:
   /reportData:
     post:
       tags:
-        - Report
+        - report learning
       summary: report learning
       consumes:
         - application/json
@@ -310,32 +312,32 @@ paths:
           type: string
           description: report learning data
           schema:
-            type: "object"
+            type: object
             properties:
                 email:
-                  type: "string"
+                  type: string
                 childId:
-                  type: "string"
+                  type: string
                 tag:
-                  type: "string"
+                  type: string
                 learningProgress:
                   weekly learning:
-                    type: "object"
+                    type: array
                     properties:
                       senin:
-                        type: "boolean"
+                        type: boolean
                       selasa:
-                        type: "boolean"
+                        type: boolean
                       rabu:
-                        type: "boolean"
+                        type: boolean
                       kamis:
-                        type: "boolean"
+                        type: boolean
                       jumat:
-                        type: "boolean"
+                        type: boolean
                       sabtu:
-                        type: "boolean"
+                        type: boolean
                       minggu:
-                        type: "boolean"
+                        type: boolean
       responses:
         200:
           description: Success
@@ -349,22 +351,22 @@ paths:
               tag:
                 type: string 
               learningprogress:
-                type: boolean
+                type: object
                 properties:
                   senin:
-                    type: "boolean"
+                    type: boolean
                   selasa:
-                    type: "boolean"
+                    type: boolean
                   rabu:
-                    type: "boolean"
+                    type: boolean
                   kamis:
-                    type: "boolean"
+                    type: boolean
                   jumat:
-                    type: "boolean"
+                    type: boolean
                   sabtu:
-                    type: "boolean"
+                    type: boolean
                   minggu:
-                    type: "boolean"
+                    type: boolean
       security:
         - ApiKeyAuth: []
 
