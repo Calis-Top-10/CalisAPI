@@ -331,11 +331,10 @@ paths:
         - application/json
       operationId: userReport
       x-google-backend:
-        address:  https://userReport-vws3d6ozda-et.a.run.app
+        address:  https://userreport-vws3d6ozda-et.a.run.app
       parameters:
         - in: body
           name: reportLearning
-          type: string
           description: user report learning 
           schema:
             type: object
@@ -346,24 +345,7 @@ paths:
                   type: string
                 tag:
                   type: string
-                learningProgress:
-                  weekly learning:
-                    type: array
-                    properties:
-                      senin:
-                        type: boolean
-                      selasa:
-                        type: boolean
-                      rabu:
-                        type: boolean
-                      kamis:
-                        type: boolean
-                      jumat:
-                        type: boolean
-                      sabtu:
-                        type: boolean
-                      minggu:
-                        type: boolean
+
       responses:
         200:
           description: Success

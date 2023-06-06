@@ -6,3 +6,4 @@ cred
 !.terraform.lock.hcl
 cfds_sa.json
 soal
+terraform.exe

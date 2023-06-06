@@ -288,9 +288,9 @@ output "insertLessons_url" {
 output "getLessonSByType_url" {
   value = google_cloudfunctions2_function.getLessonSByType.service_config[0].uri
 }
-output "insertLessons_url" {
-  value = google_cloudfunctions2_function.getLearningData.service_config[0].uri
+output "insertData_url" {
+  value = google_cloudfunctions2_function.updateUserLearning.service_config[0].uri
 }
-output "insertLessons_url" {
-  value = google_cloudfunctions2_function.reportData.service_config[0].uri
+output "insertLearning_url" {
+  value = google_cloudfunctions2_function.userReport.service_config[0].uri
 }
