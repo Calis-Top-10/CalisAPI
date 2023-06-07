@@ -3,7 +3,7 @@ venv
 __pycache__
 cred
 .terraform*
-!.terraform.lock.hcl
+.terraform.lock.hcl
 cfds_sa.json
 soal
 terraform.exe
