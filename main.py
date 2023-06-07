@@ -384,27 +384,53 @@ def updateUserLearning(request):
 #metode post report tidak disimpan di db
 @auth.auth_required() 
 def userReport(request):
-    data = request.get_json()
-    email = data.get('email')
-    child = data.get('childId')  
-    lessonThatNeedHelp = data.get ('tag')  # Perbaiki penamaan tag
-    weekly_learning = data.get('weeklyLearning', {
-        'senin': bool(),
-        'selasa': bool(),
-        'rabu': bool(),
-        'kamis': bool(),
-        'jumat': bool(),
-        'sabtu': bool(),
-        'minggu': bool()
-    })
+    userid = request.user_info['user']
+    child = request.args.get('childId')
+
+    if child == None:
+        return response.missing_field('childId')
+    
+    userData = client.get(client.key('user',userid))
+    if userData == None:
+        return Response (status=401,
+                        mimetype='application/json',
+                        response=json.dumps({'error': 'Strange, you are not registered. Maybe /login first and thn make some child if you know what I mean {ಠʖಠ}'}))
+    
+    if userData.get('children').get(child) == None:
+        return Response (status=403,
+                        mimetype='application/json',
+                        response=json.dumps({'error': 'child Id not found or this child does not belong to you'}))
+    
+    childData = client.get(client.key('user_learning', child))
+    if childData == None:
+        return Response (status=500,
+                        mimetype='application/json',
+                        response=json.dumps({'error': 'child learning data not found, please contact developer'}))
+    
+    tags = childData.get('tagScoring')
+    tags = sorted(tags.items(), key=lambda x: x[1], reverse=True)
+    #  get tags that have score less than 2
+    lessonThatNeedHelp = [tag for tag in tags if tag[1] < 2]
+
+    weeklyLearningIndex = childData.get('weeklyLearningIndex').get('integer')
+    weeklyLearningIndex = bin(weeklyLearningIndex)[2:].zfill(7)
+    weeklyLearning = {
+        'monday': weeklyLearningIndex[-1] == '1',
+        'tuesday': weeklyLearningIndex[-2] == '1',
+        'wednesday': weeklyLearningIndex[-3] == '1',
+        'thursday': weeklyLearningIndex[-4] == '1',
+        'friday': weeklyLearningIndex[-5] == '1',
+        'saturday': weeklyLearningIndex[-6] == '1',
+        'sunday': weeklyLearningIndex[-7] == '1'
+    }
     return Response(
         status=200,
         mimetype='application/json',
         response=json.dumps({
-            "email": email,
+            "email": userid,
             "childId": child,
             "tag": lessonThatNeedHelp,
-            "learningProgress": weekly_learning
+            "learningProgress": weeklyLearning
         })
     )
 
