@@ -269,6 +269,63 @@ resource "google_cloudfunctions2_function" "userReport" {
   }
 }
 
+resource "google_cloudfunctions2_function" "updateChild" {
+  name        = "updateChild"
+  location    = "asia-southeast2"
+  description = "for report learning"
+
+  build_config {
+    runtime     = "python310"
+    entry_point = "updateChild" # Set the entry point
+    environment_variables = {
+      GOOGLE_CLIENT_ID = var.client_id
+    }
+    source {
+      storage_source {
+        bucket = google_storage_bucket.default.name
+        object = google_storage_bucket_object.object.name
+      }
+    }
+  }
+  service_config {
+    max_instance_count = 1
+    available_memory   = "256M"
+    timeout_seconds    = 60
+    environment_variables = {
+      GOOGLE_CLIENT_IDS = var.client_id
+    }
+  }
+}
+
+resource "google_cloudfunctions2_function" "deleteChild" {
+  name        = "deleteChild"
+  location    = "asia-southeast2"
+  description = "for report learning"
+
+  build_config {
+    runtime     = "python310"
+    entry_point = "deleteChild" # Set the entry point
+    environment_variables = {
+      GOOGLE_CLIENT_ID = var.client_id
+    }
+    source {
+      storage_source {
+        bucket = google_storage_bucket.default.name
+        object = google_storage_bucket_object.object.name
+      }
+    }
+  }
+  service_config {
+    max_instance_count = 1
+    available_memory   = "256M"
+    timeout_seconds    = 60
+    environment_variables = {
+      GOOGLE_CLIENT_IDS = var.client_id
+    }
+  }
+}
+
+
 
 output "whoami_url" {
   value = google_cloudfunctions2_function.default.service_config[0].uri

@@ -49,7 +49,7 @@ def login(request):
 @auth.auth_required()    
 def addChildren(request):
     # check content type
-    if request.content_type != 'application/json':
+    if request.content_type.split(";")[0] != 'application/json':
         return Response(status=415,
                         mimetype='application/json',
                         response=json.dumps({"error": "Content-Type must be application/json"}))
@@ -108,7 +108,7 @@ def addChildren(request):
 @auth.auth_required()
 @auth.admin_required()    
 def insertLesson(request):
-    if request.content_type != 'application/json':
+    if request.content_type.split(";")[0] != 'application/json':
         return Response(status=415,
                         mimetype='application/json',
                         response=json.dumps({"error": "Content-Type must be application/json"}))
@@ -182,7 +182,7 @@ def insertLesson(request):
 @auth.auth_required()
 @auth.admin_required()  
 def insertLessons(request):
-    if request.content_type != 'application/json':
+    if request.content_type.split(";")[0] != 'application/json':
         return Response(status=415,
                         mimetype='application/json',
                         response=json.dumps({"error": "Content-Type must be application/json"}))
@@ -302,7 +302,7 @@ def getLessonSByType(request):
 @auth.auth_required()
 def updateUserLearning(request): 
 
-    if request.content_type != 'application/json':
+    if request.content_type.split(";")[0] != 'application/json':
         return Response(status=415,
                         mimetype='application/json',
                         response=json.dumps({"error": "Content-Type must be application/json"}))
