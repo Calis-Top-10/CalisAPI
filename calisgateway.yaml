@@ -23,6 +23,8 @@ tags:
     description: Endpoint for admin only
   - name: lesson
     description: Endpoint related to lesson
+  - name: user-learning
+    description: Endpoint related to user learning progress
 
 securityDefinitions:
   ApiKeyAuth:
@@ -262,7 +264,7 @@ paths:
   /updateUserLearning:
     post:
       tags:
-        - learning progress
+        - user-learning
       summary: update user learning progress
       consumes:
         - application/json
@@ -323,9 +325,9 @@ paths:
         - ApiKeyAuth: []
 
   /userReport:
-    post:
+    get:
       tags:
-        - user report learning
+        - user-learning
       summary: report learning
       consumes:
         - application/json
@@ -333,51 +335,206 @@ paths:
       x-google-backend:
         address:  https://userreport-vws3d6ozda-et.a.run.app
       parameters:
-        - in: body
-          name: reportLearning
-          description: user report learning 
-          schema:
-            type: object
-            properties:
-                email:
-                  type: string
-                childId:
-                  type: string
-                tag:
-                  type: string
+        - in: query
+          name: childId
+          type: string
+          format: uuid
 
       responses:
         200:
-          description: Success
+          description: OK
           schema:
             type: object
             properties:
               email:
                 type: string
+                example: c169dsx2787@bangkit.academy
               childId:
                 type: string
+                format: uuid
+                example: c279c01c-5cb7-4b04-aefb-4bb9e05b143a
               tag:
-                type: string 
-              learningprogress:
+                type: array
+                items:
+                  type: string
+                example:
+                  - [baca_mu, 0]
+                  - [baca_ba, -2]
+                  - [baca_ku, -2]
+                  - [baca_bu, -2]
+              learningProgress:
                 type: object
                 properties:
-                  senin:
+                  monday:
                     type: boolean
-                  selasa:
+                    example: true
+                  tuesday:
                     type: boolean
-                  rabu:
+                    example: false
+                  wednesday:
                     type: boolean
-                  kamis:
+                    example: true
+                  thursday:
                     type: boolean
-                  jumat:
+                    example: false
+                  friday:
                     type: boolean
-                  sabtu:
+                    example: false
+                  saturday:
                     type: boolean
-                  minggu:
+                    example: false
+                  sunday:
                     type: boolean
+                    example: false
       security:
         - ApiKeyAuth: []
+          
+  /personalLesson:
+    get:
+      summary: get personal lesson for child
+      operationId: personalLesson
+      tags:
+        - lesson
+      x-google-backend:
+        address:  https://personallesson-vws3d6ozda-et.a.run.app
+      parameters:
+        - in: query
+          name: childId
+          type: string
+          format: uuid
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            properties:
+              lessonId:
+                type: string
+                example: p_20230607161435.529889
+              lessonType:
+                type: string
+                example: personal
+              questions:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    questionId:
+                      type: string
+                      format: uuid
+                    questionDetails:
+                      type: object
+                      properties:
+                        answer:
+                          type: array
+                          items:
+                            type: string
+                        feedback_img:
+                          type: string
+                          example: "<path ke gambar buku>"
+                        question:
+                          type: string
+                      required:
+                        - answer
+                        - feedback_img
+                        - question
+                    questionType:
+                      type: string
+                    tags:
+                      type: array
+                      items:
+                        type: string
+                example:
+                  - questionId: d4e8216d-a9c4-4bc5-8824-64aff3c74312
+                    questionDetails:
+                      answer: [buku]
+                      feedback_img: "<path ke gambar buku>"
+                      question: buku
+                    questionType: baca_input_suara
+                    tags: [baca_bu, baca_ku, baca_kata_dasar]
+                  - questionId: d4e8216d-a9c4-4bc5-8824-64aff3c74312
+                    questionDetails:
+                      answer: [buku]
+                      feedback_img: "<path ke gambar buku>"
+                      question: buku
+                    questionType: baca_input_suara
+                    tags: [baca_bu, baca_ku, baca_kata_dasar]
 
+  /updateChild:
+    post:
+      tags:
+        - profile
+      summary: edit child profile
+      consumes:
+      - application/json
+      operationId: updateChild
+      x-google-backend:
+        address:  https://updatechild-vws3d6ozda-et.a.run.app
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              childId:
+                type: string
+                format: uuid
+                description: child id
+              childAge:
+                type: integer
+                description: children age
+              childName:
+                type: string
+                description: children name
+
+      responses:
+        '200':
+          description: Successful response
+          schema:
+                type: object
+                description: newly created children object
+                properties:
+                  message:
+                    type: string
+                    example: "uuid edited"
+      security:
+      - ApiKeyAuth: []
+        
+  /deleteChild:
+      post:
+        tags:
+          - profile
+        summary: delete child profile
+        consumes:
+        - application/json
+        operationId: deleteChild
+        x-google-backend:
+          address:  https://deletechild-vws3d6ozda-et.a.run.app
+        parameters:
+          - in: body
+            name: body
+            schema:
+              type: object
+              properties:
+                childId:
+                  type: string
+                  format: uuid
+                  description: child id
+
+        responses:
+          '200':
+            description: Successful response
+            schema:
+                  type: object
+                  description: meaw meaw
+                  properties:
+                    message:
+                      type: string
+                      example: "uuid deleted"
+        security:
+        - ApiKeyAuth: []
+    
+    
   /docs:
     get:
       summary: Endpoint for this -_-
