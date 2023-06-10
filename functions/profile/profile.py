@@ -94,3 +94,74 @@ def addChildren(request):
                         response=json.dumps({
                             childId: child
                         }, default=str))
+
+@auth.auth_required()
+def updateChild(request):
+    userid = request.user_info['user']
+    data = request.get_json()
+
+    childId = data.get('childId')
+    childName = data.get('childName')
+    childAge = data.get('childAge')
+
+    if childId == None:
+        return response.missing_field('childId')
+    if childName == None:
+        return response.missing_field('childName')
+    if childAge == None:
+        return response.missing_field('childAge')
+    
+    userData = client.get(client.key('user',userid))
+    if userData == None:
+        return Response (status=401,
+                        mimetype='application/json',
+                        response=json.dumps({'error': 'Strange, you are not registered. Maybe /login first and thn make some child if you know what I mean {ಠʖಠ}'}))
+    
+    if userData.get('children').get(childId) == None:
+        return Response (status=403,
+                        mimetype='application/json',
+                        response=json.dumps({'error': 'child Id not found or this child does not belong to you'}))
+    
+    childData = userData.get('children').get(childId)
+    childData['childName'] = childName
+    childData['childAge'] = childAge
+    userData['children'][childId] = childData
+    client.put(userData)
+
+    return Response (status=200,
+                    mimetype='application/json',
+                    response=json.dumps({"message":f"{childId} updated"}))
+
+
+# TODO: use this function in pubsub
+# instead of deleting the child, we should just set the status to inactive
+# and schedule delete after n days
+@auth.auth_required()
+def deleteChild(request):
+    userId = request.user_info['user']
+    data = request.get_json()
+    childId = data.get('childId')
+    if childId == None:
+        return response.missing_field('childId')
+    
+    # delete user learning
+    client.delete(client.key('user_learning', childId))
+
+    # delete child from user
+    userData = client.get(client.key('user',userId))
+    if userData == None:
+        return Response (status=401,
+                        mimetype='application/json',
+                        response=json.dumps({'error': 'Strange, you are not registered. Maybe /login first and thn make some child if you know what I mean {ಠʖಠ}'}))
+    
+    if userData.get('children').get(childId) == None:
+        return Response (status=403,
+                        mimetype='application/json',
+                        response=json.dumps({'error': 'child Id not found or this child does not belong to you'}))
+    
+    del userData['children'][childId]
+    client.put(userData)
+
+    return Response (status=200,
+                    mimetype='application/json',
+                    response=json.dumps({"message":f"{childId} deleted"}))
