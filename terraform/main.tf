@@ -15,7 +15,7 @@ provider "google" {
 # create a variable for client id
 variable "client_id" {
   type = string
-  default = "327782085729-2ufk2e1fmmr67far9h9kdqlqnp7d0ssr.apps.googleusercontent.com,327782085729-h2n5snb0i2grgge995mkslhq3tgfd161.apps.googleusercontent.com"
+  default = "327782085729-2ufk2e1fmmr67far9h9kdqlqnp7d0ssr.apps.googleusercontent.com,327782085729-h2n5snb0i2grgge995mkslhq3tgfd161.apps.googleusercontent.com,327782085729-964h8eq6s1ta2on9dag8r2g80l6kqoiq.apps.googleusercontent.com"
 }
 
 
