@@ -534,7 +534,42 @@ paths:
         security:
         - ApiKeyAuth: []
     
-    
+  /getLesson:
+    get:
+      summary: get lesson for child
+      operationId: getLesson
+      tags:
+        - lesson
+      x-google-backend:
+        address:  https://getlesson-vws3d6ozda-et.a.run.app
+      parameters:
+        - in: query
+          name: lessonId
+          type: string
+          format: uuid
+      responses:
+        200:
+          description: OK
+          
+  /getQuestion:
+    get:
+      summary: get qeustion
+      operationId: getQuestion
+      tags:
+        - lesson
+      x-google-backend:
+        address:  https://getquestion-vws3d6ozda-et.a.run.app
+      parameters:
+        - in: query
+          name: questionId
+          type: string
+          format: uuid
+      responses:
+        200:
+          description: OK
+          
+
+      
   /docs:
     get:
       summary: Endpoint for this -_-

@@ -353,6 +353,61 @@ resource "google_cloudfunctions2_function" "deleteChild" {
   }
 }
 
+resource "google_cloudfunctions2_function" "getLesson" {
+  name        = "getLesson"
+  location    = "asia-southeast2"
+  description = "for report learning"
+
+  build_config {
+    runtime     = "python310"
+    entry_point = "lesson" # Set the entry point
+    environment_variables = {
+      GOOGLE_CLIENT_ID = var.client_id
+    }
+    source {
+      storage_source {
+        bucket = google_storage_bucket.default.name
+        object = google_storage_bucket_object.object.name
+      }
+    }
+  }
+  service_config {
+    max_instance_count = 1
+    available_memory   = "256M"
+    timeout_seconds    = 60
+    environment_variables = {
+      GOOGLE_CLIENT_IDS = var.client_id
+    }
+  }
+}
+resource "google_cloudfunctions2_function" "getQuestion" {
+  name        = "getQuestion"
+  location    = "asia-southeast2"
+  description = "for report learning"
+
+  build_config {
+    runtime     = "python310"
+    entry_point = "question" # Set the entry point
+    environment_variables = {
+      GOOGLE_CLIENT_ID = var.client_id
+    }
+    source {
+      storage_source {
+        bucket = google_storage_bucket.default.name
+        object = google_storage_bucket_object.object.name
+      }
+    }
+  }
+  service_config {
+    max_instance_count = 1
+    available_memory   = "256M"
+    timeout_seconds    = 60
+    environment_variables = {
+      GOOGLE_CLIENT_IDS = var.client_id
+    }
+  }
+}
+
 
 
 output "whoami_url" {
