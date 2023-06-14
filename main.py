@@ -15,7 +15,7 @@ client = initClient()
 # load functions
 from functions.profile import whoami, login, addChildren, updateChild, deleteChild
 from functions.admin import insertLesson, insertLessons
-from functions.lesson import getLessonSByType, personalLesson
+from functions.lesson import getLessonSByType, personalLesson, question, lesson
 from functions.userlearning import updateUserLearning, userlearning, userReport
 
 def docs(request):

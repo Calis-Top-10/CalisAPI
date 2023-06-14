@@ -90,3 +90,52 @@ def personalLesson(request):
         response=json.dumps(lessonObj)
     )
 
+
+@auth.auth_required()
+def lesson(requests):
+    lessonId = requests.args.get('lessonId')
+    getall = requests.args.get('getall')
+
+    if (lessonId == None):
+        return response.missing_field('lessonId')
+    
+    query = client.query(kind='lesson')
+    query.add_filter('lessonId', '=', lessonId)
+    lesson = list(query.fetch())[0]
+
+    if (lesson == None):
+        return Response(status=404,
+                        mimetype='application/json',
+                        response=json.dumps({"error": "No lesson found"}))
+    
+    if (getall == 'true'):
+        questionIds = lesson.get('questions')
+        questions = []
+        for questionId in questionIds:
+            question = client.get(client.key('question', questionId))
+            questions.append(question)
+        lesson['questions'] = questions
+    
+    return Response(status=200,
+                    mimetype='application/json',
+                    response=json.dumps(lesson, default=str))
+        
+    
+@auth.auth_required()
+def question(requests):
+    questionId = requests.args.get('questionId')
+
+    if (questionId == None):
+        return response.missing_field('questionId')
+    
+    question = client.get(client.key('question', questionId))
+    if (question == None):
+        return Response(status=404,
+                        mimetype='application/json',
+                        response=json.dumps({"error": "No question found"}))
+    
+    return Response(status=200,
+                    mimetype='application/json',
+                    response=json.dumps(question, default=str))
+
+
