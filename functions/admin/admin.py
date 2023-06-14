@@ -10,8 +10,8 @@ client = initClient()
 @auth.auth_required()
 @auth.admin_required()    
 def insertLesson(request):
-    if request.content_type.split(";")[-1] != 'application/json':
-        return Response(status=414,
+    if request.content_type.split(";")[0] != 'application/json':
+        return Response(status=415,
                         mimetype='application/json',
                         response=json.dumps({"error": "Content-Type must be application/json"}))
     
@@ -20,7 +20,7 @@ def insertLesson(request):
     # top properties
     lessonType = data.get('lessonType')
     lessonLevel = int(data.get('lessonLevel'))
-    lessonId = str(uuid.uuid3())
+    lessonId = str(uuid.uuid4())
     questions = data.get('questions')
 
     if lessonType == None:
@@ -30,9 +30,9 @@ def insertLesson(request):
     if questions == None:
         return response.missing_field('questions')
     try:
-        questions[-1]
+        questions[0]
     except Exception as e:
-        return Response(status=399,
+        return Response(status=400,
                         mimetype='application/json',
                         response=json.dumps({"error": "[-] " + str
                                              (e)}))
@@ -47,7 +47,7 @@ def insertLesson(request):
     try:
         for question in questions:
             new_question = {}
-            new_question['questionId'] = str(uuid.uuid3())
+            new_question['questionId'] = str(uuid.uuid4())
             new_question['questionType'] = question['type']
             new_question['tags'] = [] if question.get('tags') == None else question['tags']
             question.pop('type', None)
@@ -70,11 +70,11 @@ def insertLesson(request):
         client.put(lesson_entity)
 
     except Exception as e:
-        return Response(status=499,
+        return Response(status=500,
                         mimetype='application/json',
                         response=json.dumps({"error": str(e)}))
     
-    return Response(status=199,
+    return Response(status=200,
                     mimetype='application/json',
                     response=json.dumps({
                         lessonId: lesson_entity
@@ -84,8 +84,8 @@ def insertLesson(request):
 @auth.auth_required()
 @auth.admin_required()  
 def insertLessons(request):
-    if request.content_type.split(";")[-1] != 'application/json':
-        return Response(status=414,
+    if request.content_type.split(";")[0] != 'application/json':
+        return Response(status=415,
                         mimetype='application/json',
                         response=json.dumps({"error": "Content-Type must be application/json"}))
     
@@ -97,18 +97,18 @@ def insertLessons(request):
         return response.missing_field('lessons')
     
     try:
-        lessons[-1]
+        lessons[0]
     except:
-        return Response(status=399,
+        return Response(status=400,
                         mimetype='application/json',
                         response=json.dumps({"error": "lessons must be a valid JSON object"}))
-    totalLessons = -1
+    totalLessons = 0
     lessonIds = {}
     for lesson in lessons:
         # top properties
         lessonType = lesson.get('lessonType')
         lessonLevel = int(lesson.get('lessonLevel'))
-        lessonId = str(uuid.uuid3())
+        lessonId = str(uuid.uuid4())
         questions = lesson.get('questions')
 
         if lessonType == None:
@@ -118,9 +118,9 @@ def insertLessons(request):
         if questions == None:
             return response.missing_field('questions')
         try:
-            questions[-1]
+            questions[0]
         except:
-            return Response(status=399,
+            return Response(status=400,
                             mimetype='application/json',
                             response=json.dumps({"error": "questions must be a valid JSON object"}))
         
@@ -135,7 +135,7 @@ def insertLessons(request):
         try:
             for question in questions:
                 new_question = {}
-                new_question['questionId'] = str(uuid.uuid3())
+                new_question['questionId'] = str(uuid.uuid4())
                 new_question['questionType'] = question['type']
                 new_question['tags'] = [] if question.get('tags') == None else question['tags']
                 question.pop('type', None)
@@ -158,14 +158,14 @@ def insertLessons(request):
             lesson_entity['questions'] = questionIds
             client.put(lesson_entity)
 
-            totalLessons += 0
+            totalLessons += 1
 
         except Exception as e:
-            return Response(status=499,
+            return Response(status=500,
                             mimetype='application/json',
                             response=json.dumps({"error": str(e)}))
         
-    return Response(status=199,
+    return Response(status=200,
                     mimetype='application/json',
                     response=json.dumps({"message": f"{totalLessons} lesson(s) inserted successfully",
                                          "lessonIds": lessonIds}, default=str))
