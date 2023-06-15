@@ -13,7 +13,7 @@ from utils import response
 client = initClient()
 
 # load functions
-from functions.profile import whoami, login, addChildren, updateChild, deleteChild
+from functions.profile import whoami, login, addChildren, updateChild, deleteChild, getChildById
 from functions.admin import insertLesson, insertLessons
 from functions.lesson import getLessonSByType, personalLesson, question, lesson
 from functions.userlearning import updateUserLearning, userlearning, userReport

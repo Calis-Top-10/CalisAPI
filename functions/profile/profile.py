@@ -165,3 +165,30 @@ def deleteChild(request):
     return Response (status=200,
                     mimetype='application/json',
                     response=json.dumps({"message":f"{childId} deleted"}))
+
+@auth.auth_required()
+def getChildById(request):
+    userId = request.user_info['user']
+    childId = request.args.get('childId')
+
+    if childId == None:
+        return response.missing_field('childId')
+
+    userData = client.get(client.key('user',userId))
+    if userData == None:
+        return Response (status=401,
+                        mimetype='application/json',
+                        response=json.dumps({'error': 'Strange, you are not registered. Maybe /login first and thn make some child if you know what I mean {ಠʖಠ}'}))
+    
+    if userData.get('children').get(childId) == None:
+        return Response (status=403,
+                        mimetype='application/json',
+                        response=json.dumps({'error': 'child Id not found or this child does not belong to you'}))
+
+    return Response(
+            status=200,
+            mimetype='application/json',
+            response = json.dumps(userData.get('children').get(childId), default=str)
+            )
+ 
+
