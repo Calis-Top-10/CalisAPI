@@ -36,11 +36,12 @@ def auth_required():
             try:
                 token_info = id_token.verify_oauth2_token(
                     token.split(' ')[1], requests.Request())
-                
+                print(token_info)
                 if token_info['aud'] not in GOOGLE_CLIENT_IDS: #second one is for dev
                     raise ValueError('Wrong recipient. You are not authenticated through registered Calis app or website.')
                 
             except Exception as e:
+                print(json.dumps(token))
                 return Response(status=401,
                                 mimetype='application/json',
                                 response=json.dumps({

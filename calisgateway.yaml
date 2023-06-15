@@ -459,6 +459,9 @@ paths:
                       question: buku
                     questionType: baca_input_suara
                     tags: [baca_bu, baca_ku, baca_kata_dasar]
+      security:
+      - ApiKeyAuth: []
+
 
   /updateChild:
     post:
