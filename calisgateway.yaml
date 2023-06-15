@@ -572,7 +572,25 @@ paths:
           description: OK
           
 
-      
+  /getChildById:
+    get:
+      summary: get child by id (you must own this child)
+      operationId: getChildById
+      tags:
+        - profile
+      x-google-backend:
+        address: https://getchildbyid-vws3d6ozda-et.a.run.app
+      parameters:
+        - in: query
+          name: childId
+          type: string
+          format: uuid
+      responses:
+        200:
+          description: child object
+      security:
+        - ApiKeyAuth: []
+
   /docs:
     get:
       summary: Endpoint for this -_-

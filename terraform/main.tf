@@ -408,6 +408,33 @@ resource "google_cloudfunctions2_function" "getQuestion" {
   }
 }
 
+resource "google_cloudfunctions2_function" "getChildById" {
+  name        = "getChildById"
+  location    = "asia-southeast2"
+  description = "get child by id"
+
+  build_config {
+    runtime     = "python310"
+    entry_point = "getChildById" # Set the entry point
+    environment_variables = {
+      GOOGLE_CLIENT_ID = var.client_id
+    }
+    source {
+      storage_source {
+        bucket = google_storage_bucket.default.name
+        object = google_storage_bucket_object.object.name
+      }
+    }
+  }
+  service_config {
+    max_instance_count = 1
+    available_memory   = "256M"
+    timeout_seconds    = 60
+    environment_variables = {
+      GOOGLE_CLIENT_IDS = var.client_id
+    }
+  }
+}
 
 
 output "whoami_url" {
