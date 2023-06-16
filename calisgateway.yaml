@@ -2,7 +2,11 @@ swagger: '2.0'
 info:
   title: calis-api
   description: |-
-    This is API for calis mobile app. **make sure to provide authorization header**. For testing, you can get it here: [auth echo](https://authecho-vws3d6ozda-et.a.run.app/)
+    This is The Official Private API for **Calis - Aplikasi Belajar Baca, Tulis, Hitung** mobile app. You need to provide a Google **id_token** in the **Authorization** bearer in order to call this API. Example:
+    **curl -X GET "https://host/v1/whoami" -H "accept: application/json" -H "Authorization: Bearer your_id_token"**
+    
+    Any Google **id_token** that are not from our Official Mobile App will be invalid. For Bangkit team, you can use [this](https://authecho-vws3d6ozda-et.a.run.app/) to get valid **id_token** (this will be deleted when the app released to public).
+  
   version: 1.0.0
   
 host: gateway-calis-46kwzo0x.an.gateway.dev
@@ -37,7 +41,7 @@ paths:
     get:
       tags:
         - auth
-      summary: Auth echo
+      summary: Auth echo, return your token information
       consumes:
       - application/json
       operationId: authecho
@@ -46,8 +50,6 @@ paths:
       responses:
         '200':
           description: Successful response
-          schema:
-            type: string
       security:
       - ApiKeyAuth: []
   
@@ -225,7 +227,7 @@ paths:
         - in: query
           name: lessonType
           type: string
-          description: lesson type
+          description: lesson type (baca, tulis, hitung)
       responses:
         200:
           description: Success
