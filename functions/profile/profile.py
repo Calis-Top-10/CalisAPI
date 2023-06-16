@@ -124,7 +124,7 @@ def updateChild(request):
     
     childData = userData.get('children').get(childId)
     childData['childName'] = childName
-    childData['childAge'] = childAge
+    childData['yearOfBirth'] = datetime.datetime.now().year - int(childAge)
     userData['children'][childId] = childData
     client.put(userData)
 
